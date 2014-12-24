@@ -20,5 +20,6 @@ func main() {
 ~~~
 
 ```
-2014-12-24T06:42:04Z [ERROR] :: Error :O!
-2014-12-24T06:42:04Z  [INFO] :: Hello Log!!
+2014-12-24T06:46:54Z [ERROR] :: >> Error :O <<
+2014-12-24T06:46:54Z  [INFO] :: Hello Log!!
+```
