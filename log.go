@@ -9,26 +9,30 @@ import (
 
 type Logger struct {
 	level  Level
-	writer io.Writer
+	format string
+	writer []io.Writer
 }
 
 func ClassicLogger() *Logger {
 	return &Logger{
 		level:  INFO,
-		writer: os.Stderr,
+		format: time.RFC3339,
+		writer: []io.Writer{os.Stderr},
 	}
 }
 
 func LevelLogger(level Level) *Logger {
 	return &Logger{
 		level:  level,
-		writer: os.Stderr,
+		format: time.RFC3339,
+		writer: []io.Writer{os.Stderr},
 	}
 }
 
-func New(level Level, writer io.Writer) *Logger {
+func New(level Level, format string, writer ...io.Writer) *Logger {
 	return &Logger{
 		level:  level,
+		format: format,
 		writer: writer,
 	}
 }
@@ -37,8 +41,16 @@ func (l *Logger) Level(level Level) {
 	l.level = level
 }
 
-func (l *Logger) Writer(writer io.Writer) {
+func (l *Logger) Writer(writer ...io.Writer) {
 	l.writer = writer
+}
+
+func (l *Logger) AddWriter(writer io.Writer) {
+	l.writer = append(l.writer, writer)
+}
+
+func (l *Logger) Format(format string) {
+	l.format = format
 }
 
 func (l *Logger) Logf(level Level, format string, v ...interface{}) {
@@ -91,10 +103,13 @@ func (l *Logger) Error(v ...interface{}) {
 
 func (l *Logger) logger(level Level, message string) {
 	if level >= l.level {
-		timestamp := time.Now().UTC().Format(time.RFC3339)
+		timestamp := time.Now().UTC().Format(l.format)
 		name := fmt.Sprintf("[%s]", level.String())
 
 		entry := fmt.Sprintf("%s %7s :: %s\n", timestamp, name, message)
-		l.writer.Write([]byte(entry))
+
+		for _, writer := range l.writer {
+			writer.Write([]byte(entry))
+		}
 	}
 }

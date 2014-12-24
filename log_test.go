@@ -3,14 +3,15 @@ package gol_test
 import (
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/mikebeyer/gol"
 )
 
 func TestSuppression(t *testing.T) {
 	writer := NewWriter()
-	log := gol.New(gol.INFO, writer)
-	message := "GET 200"
+	log := gol.New(gol.INFO, time.RFC3339, writer)
+	message := "GET /apache_pb.gif HTTP/1.0 200 2326"
 	ammount := "12.2123123ms"
 	log.Infof("%s", message)
 	log.Tracef("%s", ammount)
@@ -49,32 +50,46 @@ var levels = []gol.Level{
 
 func TestAll(t *testing.T) {
 	for _, level := range levels {
-		writer := NewWriter()
-		log := gol.New(level, writer)
+		a := NewWriter()
+		b := NewWriter()
+		log := gol.New(level, time.RFC3339, a, b)
 
-		message := "GET 200"
+		message := "GET /apache_pb.gif HTTP/1.0 200 2326"
 		log.Logf(level, "%s", message)
 
-		response := writer.Data.Value[0]
+		respA := a.Data.Value[0]
+		respB := b.Data.Value[0]
 
-		if len(writer.Data.Value) != 1 {
-			t.Errorf("only 1 value should have been written, was %v", len(writer.Data.Value))
+		if len(a.Data.Value) != 1 {
+			t.Errorf("only 1 value should have been written, was %v", len(a.Data.Value))
 		}
 
-		if !strings.Contains(response, message) {
-			t.Errorf("expected data to contain %s was %s", message, response)
+		if !strings.Contains(respA, message) {
+			t.Errorf("expected data to contain %s was %s", message, respA)
 		}
 
-		if !strings.Contains(response, level.String()) {
-			t.Errorf("expected data to contain %s was %s", level.String(), response)
+		if !strings.Contains(respA, level.String()) {
+			t.Errorf("expected data to contain %s was %s", level.String(), respA)
+		}
+
+		if len(b.Data.Value) != 1 {
+			t.Errorf("only 1 value should have been written, was %v", len(b.Data.Value))
+		}
+
+		if !strings.Contains(respB, message) {
+			t.Errorf("expected data to contain %s was %s", message, respB)
+		}
+
+		if !strings.Contains(respB, level.String()) {
+			t.Errorf("expected data to contain %s was %s", level.String(), respB)
 		}
 	}
 }
 
 func TestErrorf(t *testing.T) {
 	writer := NewWriter()
-	log := gol.New(gol.TRACE, writer)
-	message := "GET 200"
+	log := gol.New(gol.TRACE, time.RFC3339, writer)
+	message := "GET /apache_pb.gif HTTP/1.0 200 2326"
 	log.Errorf("%s", message)
 
 	response := writer.Data.Value[0]
@@ -90,8 +105,8 @@ func TestErrorf(t *testing.T) {
 
 func TestError(t *testing.T) {
 	writer := NewWriter()
-	log := gol.New(gol.TRACE, writer)
-	message := "GET 200"
+	log := gol.New(gol.TRACE, time.RFC3339, writer)
+	message := "GET /apache_pb.gif HTTP/1.0 200 2326"
 	log.Error(message)
 
 	response := writer.Data.Value[0]
@@ -107,8 +122,8 @@ func TestError(t *testing.T) {
 
 func TestWarnf(t *testing.T) {
 	writer := NewWriter()
-	log := gol.New(gol.TRACE, writer)
-	message := "GET 200"
+	log := gol.New(gol.TRACE, time.RFC3339, writer)
+	message := "GET /apache_pb.gif HTTP/1.0 200 2326"
 	log.Warnf("%s", message)
 
 	response := writer.Data.Value[0]
@@ -124,8 +139,8 @@ func TestWarnf(t *testing.T) {
 
 func TestWarn(t *testing.T) {
 	writer := NewWriter()
-	log := gol.New(gol.TRACE, writer)
-	message := "GET 200"
+	log := gol.New(gol.TRACE, time.RFC3339, writer)
+	message := "GET /apache_pb.gif HTTP/1.0 200 2326"
 	log.Warn(message)
 
 	response := writer.Data.Value[0]
@@ -141,8 +156,8 @@ func TestWarn(t *testing.T) {
 
 func TestInfof(t *testing.T) {
 	writer := NewWriter()
-	log := gol.New(gol.TRACE, writer)
-	message := "GET 200"
+	log := gol.New(gol.TRACE, time.RFC3339, writer)
+	message := "GET /apache_pb.gif HTTP/1.0 200 2326"
 	log.Infof("%s", message)
 
 	response := writer.Data.Value[0]
@@ -158,8 +173,8 @@ func TestInfof(t *testing.T) {
 
 func TestInfo(t *testing.T) {
 	writer := NewWriter()
-	log := gol.New(gol.TRACE, writer)
-	message := "GET 200"
+	log := gol.New(gol.TRACE, time.RFC3339, writer)
+	message := "GET /apache_pb.gif HTTP/1.0 200 2326"
 	log.Info(message)
 
 	response := writer.Data.Value[0]
@@ -175,8 +190,8 @@ func TestInfo(t *testing.T) {
 
 func TestDebugf(t *testing.T) {
 	writer := NewWriter()
-	log := gol.New(gol.TRACE, writer)
-	message := "GET 200"
+	log := gol.New(gol.TRACE, time.RFC3339, writer)
+	message := "GET /apache_pb.gif HTTP/1.0 200 2326"
 	log.Debugf("%s", message)
 
 	response := writer.Data.Value[0]
@@ -192,8 +207,8 @@ func TestDebugf(t *testing.T) {
 
 func TestDebug(t *testing.T) {
 	writer := NewWriter()
-	log := gol.New(gol.TRACE, writer)
-	message := "GET 200"
+	log := gol.New(gol.TRACE, time.RFC3339, writer)
+	message := "GET /apache_pb.gif HTTP/1.0 200 2326"
 	log.Debug(message)
 
 	response := writer.Data.Value[0]
@@ -209,8 +224,8 @@ func TestDebug(t *testing.T) {
 
 func TestTracef(t *testing.T) {
 	writer := NewWriter()
-	log := gol.New(gol.TRACE, writer)
-	message := "GET 200"
+	log := gol.New(gol.TRACE, time.RFC3339, writer)
+	message := "GET /apache_pb.gif HTTP/1.0 200 2326"
 	log.Tracef("%s", message)
 
 	response := writer.Data.Value[0]
@@ -226,8 +241,8 @@ func TestTracef(t *testing.T) {
 
 func TestTrace(t *testing.T) {
 	writer := NewWriter()
-	log := gol.New(gol.TRACE, writer)
-	message := "GET 200"
+	log := gol.New(gol.TRACE, time.RFC3339, writer)
+	message := "GET /apache_pb.gif HTTP/1.0 200 2326"
 	log.Trace(message)
 
 	response := writer.Data.Value[0]
