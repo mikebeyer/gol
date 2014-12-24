@@ -14,7 +14,7 @@ import "github.com/mikebeyer/gol"
 func main() {
   log := gol.ClassicLogger()
 
-  log.Errorf("%s!", "Error :O")
+  log.Errorf(">> %s <<", "Error :O")
   log.Infof("%s!", "Hello Log!")
 }
 ~~~
