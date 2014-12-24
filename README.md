@@ -3,8 +3,7 @@ gol
 
 Simple go logging replacement
 
-## Getting Started
-
+[ ![Codeship Status for mikebeyer/gofig](https://codeship.io/projects/e89699b0-6d67-0132-e135-261dee642691/status)](https://codeship.io/projects/54221)
 
 ~~~ go
 package main
