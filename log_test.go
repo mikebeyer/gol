@@ -17,11 +17,11 @@ func TestSuppression(t *testing.T) {
 	log.Tracef("%s", ammount)
 	log.Debugf("%s", "/")
 
-	response := writer.Data.Value[0]
-
 	if len(writer.Data.Value) != 1 {
-		t.Errorf("only 1 value should have been written, was %v", len(writer.Data.Value))
+		t.Fatalf("only 1 value should have been written, was %v", len(writer.Data.Value))
 	}
+
+	response := writer.Data.Value[0]
 
 	if !strings.Contains(response, message) {
 		t.Errorf("expected data to contain %s was %s", message, response)
@@ -68,8 +68,10 @@ func TestAll(t *testing.T) {
 			t.Errorf("expected data to contain %s was %s", message, respA)
 		}
 
-		if !strings.Contains(respA, level.String()) {
-			t.Errorf("expected data to contain %s was %s", level.String(), respA)
+		val, _ := level.String()
+
+		if !strings.Contains(respA, val) {
+			t.Errorf("expected data to contain %s was %s", val, respA)
 		}
 
 		if len(b.Data.Value) != 1 {
@@ -80,8 +82,10 @@ func TestAll(t *testing.T) {
 			t.Errorf("expected data to contain %s was %s", message, respB)
 		}
 
-		if !strings.Contains(respB, level.String()) {
-			t.Errorf("expected data to contain %s was %s", level.String(), respB)
+		val, _ = level.String()
+
+		if !strings.Contains(respB, val) {
+			t.Errorf("expected data to contain %s was %s", val, respB)
 		}
 	}
 }
@@ -93,14 +97,7 @@ func TestErrorf(t *testing.T) {
 	log.Errorf("%s", message)
 
 	response := writer.Data.Value[0]
-
-	if !strings.Contains(response, message) {
-		t.Errorf("expected data to contain %s was %s", message, response)
-	}
-
-	if !strings.Contains(response, "ERROR") {
-		t.Errorf("expected data to contain %s was %s", "ERROR", response)
-	}
+	checkResponse(t, message, response, "ERROR")
 }
 
 func TestError(t *testing.T) {
@@ -110,14 +107,7 @@ func TestError(t *testing.T) {
 	log.Error(message)
 
 	response := writer.Data.Value[0]
-
-	if !strings.Contains(response, message) {
-		t.Errorf("expected data to contain %s was %s", message, response)
-	}
-
-	if !strings.Contains(response, "ERROR") {
-		t.Errorf("expected data to contain %s was %s", "ERROR", response)
-	}
+	checkResponse(t, message, response, "ERROR")
 }
 
 func TestWarnf(t *testing.T) {
@@ -127,14 +117,7 @@ func TestWarnf(t *testing.T) {
 	log.Warnf("%s", message)
 
 	response := writer.Data.Value[0]
-
-	if !strings.Contains(response, message) {
-		t.Errorf("expected data to contain %s was %s", message, response)
-	}
-
-	if !strings.Contains(response, "WARN") {
-		t.Errorf("expected data to contain %s was %s", "WARN", response)
-	}
+	checkResponse(t, message, response, "WARN")
 }
 
 func TestWarn(t *testing.T) {
@@ -144,14 +127,7 @@ func TestWarn(t *testing.T) {
 	log.Warn(message)
 
 	response := writer.Data.Value[0]
-
-	if !strings.Contains(response, message) {
-		t.Errorf("expected data to contain %s was %s", message, response)
-	}
-
-	if !strings.Contains(response, "WARN") {
-		t.Errorf("expected data to contain %s was %s", "WARN", response)
-	}
+	checkResponse(t, message, response, "WARN")
 }
 
 func TestInfof(t *testing.T) {
@@ -161,14 +137,7 @@ func TestInfof(t *testing.T) {
 	log.Infof("%s", message)
 
 	response := writer.Data.Value[0]
-
-	if !strings.Contains(response, message) {
-		t.Errorf("expected data to contain %s was %s", message, response)
-	}
-
-	if !strings.Contains(response, "INFO") {
-		t.Errorf("expected data to contain %s was %s", "INFO", response)
-	}
+	checkResponse(t, message, response, "INFO")
 }
 
 func TestInfo(t *testing.T) {
@@ -178,14 +147,7 @@ func TestInfo(t *testing.T) {
 	log.Info(message)
 
 	response := writer.Data.Value[0]
-
-	if !strings.Contains(response, message) {
-		t.Errorf("expected data to contain %s was %s", message, response)
-	}
-
-	if !strings.Contains(response, "INFO") {
-		t.Errorf("expected data to contain %s was %s", "INFO", response)
-	}
+	checkResponse(t, message, response, "INFO")
 }
 
 func TestDebugf(t *testing.T) {
@@ -195,14 +157,7 @@ func TestDebugf(t *testing.T) {
 	log.Debugf("%s", message)
 
 	response := writer.Data.Value[0]
-
-	if !strings.Contains(response, message) {
-		t.Errorf("expected data to contain %s was %s", message, response)
-	}
-
-	if !strings.Contains(response, "DEBUG") {
-		t.Errorf("expected data to contain %s was %s", "DEBUG", response)
-	}
+	checkResponse(t, message, response, "DEBUG")
 }
 
 func TestDebug(t *testing.T) {
@@ -212,14 +167,7 @@ func TestDebug(t *testing.T) {
 	log.Debug(message)
 
 	response := writer.Data.Value[0]
-
-	if !strings.Contains(response, message) {
-		t.Errorf("expected data to contain %s was %s", message, response)
-	}
-
-	if !strings.Contains(response, "DEBUG") {
-		t.Errorf("expected data to contain %s was %s", "DEBUG", response)
-	}
+	checkResponse(t, message, response, "DEBUG")
 }
 
 func TestTracef(t *testing.T) {
@@ -229,14 +177,7 @@ func TestTracef(t *testing.T) {
 	log.Tracef("%s", message)
 
 	response := writer.Data.Value[0]
-
-	if !strings.Contains(response, message) {
-		t.Errorf("expected data to contain %s was %s", message, response)
-	}
-
-	if !strings.Contains(response, "TRACE") {
-		t.Errorf("expected data to contain %s was %s", "TRACE", response)
-	}
+	checkResponse(t, message, response, "TRACE")
 }
 
 func TestTrace(t *testing.T) {
@@ -246,13 +187,16 @@ func TestTrace(t *testing.T) {
 	log.Trace(message)
 
 	response := writer.Data.Value[0]
+	checkResponse(t, message, response, "TRACE")
+}
 
+func checkResponse(t *testing.T, message string, response string, level string) {
 	if !strings.Contains(response, message) {
 		t.Errorf("expected data to contain %s was %s", message, response)
 	}
 
-	if !strings.Contains(response, "TRACE") {
-		t.Errorf("expected data to contain %s was %s", "TRACE", response)
+	if !strings.Contains(response, level) {
+		t.Errorf("expected data to contain %s was %s", level, response)
 	}
 }
 

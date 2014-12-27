@@ -1,5 +1,7 @@
 package gol
 
+import "fmt"
+
 const (
 	TRACE Level = iota
 	DEBUG
@@ -10,18 +12,34 @@ const (
 
 type Level int8
 
-func (l Level) String() string {
+func (l Level) String() (string, error) {
 	switch l {
 	case TRACE:
-		return "TRACE"
+		return "TRACE", nil
 	case DEBUG:
-		return "DEBUG"
+		return "DEBUG", nil
 	case INFO:
-		return "INFO"
+		return "INFO", nil
 	case WARN:
-		return "WARN"
+		return "WARN", nil
 	case ERROR:
-		return "ERROR"
+		return "ERROR", nil
 	}
-	return ";?"
+	return "", fmt.Errorf("Undefinted level: %s", l)
+}
+
+func Parse(level string) (Level, error) {
+	switch level {
+	case "TRACE":
+		return TRACE, nil
+	case "DEBUG":
+		return DEBUG, nil
+	case "INFO":
+		return INFO, nil
+	case "WARN":
+		return WARN, nil
+	case "ERROR":
+		return ERROR, nil
+	}
+	return 0, fmt.Errorf("Unkown level: %s", level)
 }

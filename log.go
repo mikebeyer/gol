@@ -104,12 +104,16 @@ func (l *Logger) Error(v ...interface{}) {
 func (l *Logger) logger(level Level, message string) {
 	if level >= l.level {
 		timestamp := time.Now().UTC().Format(l.format)
-		name := fmt.Sprintf("[%s]", level.String())
 
-		entry := fmt.Sprintf("%s %7s :: %s\n", timestamp, name, message)
+		val, err := level.String()
+		if err == nil {
+			name := fmt.Sprintf("[%s]", val)
 
-		for _, writer := range l.writer {
-			writer.Write([]byte(entry))
+			entry := fmt.Sprintf("%s %7s :: %s\n", timestamp, name, message)
+
+			for _, writer := range l.writer {
+				writer.Write([]byte(entry))
+			}
 		}
 	}
 }
