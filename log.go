@@ -4,10 +4,12 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"sync"
 	"time"
 )
 
 type Logger struct {
+	mu     sync.Mutex
 	level  Level
 	format string
 	writer []io.Writer
@@ -38,18 +40,26 @@ func New(level Level, format string, writer ...io.Writer) *Logger {
 }
 
 func (l *Logger) Level(level Level) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
 	l.level = level
 }
 
 func (l *Logger) Writer(writer ...io.Writer) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
 	l.writer = writer
 }
 
 func (l *Logger) AddWriter(writer io.Writer) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
 	l.writer = append(l.writer, writer)
 }
 
 func (l *Logger) Format(format string) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
 	l.format = format
 }
 
@@ -102,6 +112,8 @@ func (l *Logger) Error(v ...interface{}) {
 }
 
 func (l *Logger) logger(level Level, message string) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
 	if level >= l.level {
 		timestamp := time.Now().UTC().Format(l.format)
 
