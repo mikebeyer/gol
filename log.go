@@ -111,6 +111,20 @@ func (l *Logger) Error(v ...interface{}) {
 	l.logger(ERROR, fmt.Sprint(v...))
 }
 
+func (l *Logger) Write(b []byte) (int, error) {
+	var size int
+	var err error
+	for _, writer := range l.writer {
+		i, e := writer.Write(b)
+		if e != nil {
+			err = e
+		}
+		size = i
+	}
+
+	return size, err
+}
+
 func (l *Logger) logger(level Level, message string) {
 	l.mu.Lock()
 	defer l.mu.Unlock()
